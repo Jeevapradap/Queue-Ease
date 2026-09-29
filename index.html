@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>QueueEase - Virtual Queue</title>
+
+<style>
+
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f2f5f9;
+    color: #222;
+}
+
+header {
+    background: #1769aa;
+    color: white;
+    text-align: center;
+    padding: 25px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+nav {
+    background: #0d4f80;
+    text-align: center;
+    padding: 12px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+}
+
+.container {
+    width: 90%;
+    max-width: 900px;
+    margin: 30px auto;
+}
+
+.box {
+    background: white;
+    padding: 25px;
+    margin-bottom: 25px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px #ccc;
+}
+
+h2 {
+    color: #1769aa;
+}
+
+label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+}
+
+input, select {
+    width: 100%;
+    padding: 12px;
+    margin-top: 6px;
+    box-sizing: border-box;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+}
+
+button {
+    background: #1769aa;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    margin-top: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #0d4f80;
+}
+
+.token {
+    text-align: center;
+    background: #e3f2fd;
+    padding: 20px;
+    margin-top: 20px;
+    display: none;
+}
+
+.token h3 {
+    font-size: 40px;
+    color: #1769aa;
+    margin: 10px;
+}
+
+.current {
+    text-align: center;
+}
+
+.current-number {
+    font-size: 55px;
+    font-weight: bold;
+    color: #1769aa;
+}
+
+.status {
+    padding: 15px;
+    background: #f1f8e9;
+    margin-top: 15px;
+    border-radius: 5px;
+}
+
+footer {
+    background: #222;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 40px;
+}
+
+@media(max-width:600px) {
+
+    nav a {
+        display: block;
+        margin: 8px;
+    }
+
+    .container {
+        width: 94%;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>QueueEase</h1>
+
+<p>Simple Virtual Queue Management System</p>
+
+</header>
+
+<nav>
+
+<a href="#home">Home</a>
+
+<a href="#join">Get Token</a>
+
+<a href="#status">Queue Status</a>
+
+<a href="#track">Track Token</a>
+
+</nav>
+
+<div class="container">
+
+<!-- HOME -->
+
+<div class="box" id="home">
+
+<h2>Welcome to QueueEase</h2>
+
+<p>
+QueueEase helps people avoid standing in long queues.
+Get a digital token and check your queue position online.
+</p>
+
+<p>This system can be used in:</p>
+
+<ul>
+
+<li>Hospitals</li>
+
+<li>Government offices</li>
+
+<li>College offices</li>
+
+<li>Banks</li>
+
+<li>Service centres</li>
+
+</ul>
+
+</div>
+
+<!-- GET TOKEN -->
+
+<div class="box" id="join">
+
+<h2>Get Your Token</h2>
+
+<label>Your Name</label>
+
+<input
+type="text"
+id="name"
+placeholder="Enter your name"
+>
+
+<label>Select Service</label>
+
+<select id="service">
+
+<option value="">
+Select a service
+</option>
+
+<option>Hospital / Clinic</option>
+
+<option>Government Office</option>
+
+<option>College Office</option>
+
+<option>Bank</option>
+
+<option>Other Service</option>
+
+</select>
+
+<button onclick="getToken()">
+Get Token
+</button>
+
+<div class="token" id="tokenBox">
+
+<p>Your Token Number</p>
+
+<h3 id="newToken">
+T-001
+</h3>
+
+<p id="message"></p>
+
+</div>
+
+</div>
+
+<!-- QUEUE STATUS -->
+
+<div class="box current" id="status">
+
+<h2>Current Queue Status</h2>
+
+<p>Now Serving</p>
+
+<div class="current-number" id="currentToken">
+T-014
+</div>
+
+<p>
+People currently waiting:
+<strong id="waiting">6</strong>
+</p>
+
+<button onclick="nextToken()">
+Call Next Token
+</button>
+
+</div>
+
+<!-- TRACK TOKEN -->
+
+<div class="box" id="track">
+
+<h2>Track Your Token</h2>
+
+<p>
+Enter your token number to check your position.
+</p>
+
+<input
+type="text"
+id="trackNumber"
+placeholder="Example: T-020"
+>
+
+<button onclick="trackToken()">
+Track Token
+</button>
+
+<div class="status" id="trackResult">
+
+Enter your token number above.
+
+</div>
+
+</div>
+
+<!-- HOW IT WORKS -->
+
+<div class="box">
+
+<h2>How It Works</h2>
+
+<ol>
+
+<li>Select the service you need.</li>
+
+<li>Enter your name.</li>
+
+<li>Get your digital token.</li>
+
+<li>Check the current queue.</li>
+
+<li>Come to the counter when your turn is near.</li>
+
+</ol>
+
+</div>
+
+</div>
+
+<footer>
+
+<p><strong>QueueEase</strong></p>
+
+<p>Smart Virtual Queue Management System</p>
+
+<p>Hackathon Prototype</p>
+
+</footer>
+
+<script>
+
+// Starting token number
+
+let currentNumber = 14;
+
+let nextNumber = 20;
+
+
+// GET TOKEN
+
+function getToken() {
+
+    let name =
+        document.getElementById("name").value;
+
+    let service =
+        document.getElementById("service").value;
+
+    if(name == "") {
+
+        alert("Please enter your name.");
+
+        return;
+
+    }
+
+    if(service == "") {
+
+        alert("Please select a service.");
+
+        return;
+
+    }
+
+    let token =
+        "T-" +
+        String(nextNumber).padStart(3, "0");
+
+    document.getElementById(
+        "newToken"
+    ).innerHTML = token;
+
+    document.getElementById(
+        "message"
+    ).innerHTML =
+        "Hello " + name +
+        "! You selected " + service +
+        ". Please wait for your turn.";
+
+    document.getElementById(
+        "tokenBox"
+    ).style.display = "block";
+
+    document.getElementById(
+        "trackNumber"
+    ).value = token;
+
+    nextNumber++;
+
+}
+
+
+// CALL NEXT TOKEN
+
+function nextToken() {
+
+    currentNumber++;
+
+    let token =
+        "T-" +
+        String(currentNumber).padStart(3, "0");
+
+    document.getElementById(
+        "currentToken"
+    ).innerHTML = token;
+
+    let waiting =
+        nextNumber - currentNumber - 1;
+
+    if(waiting < 0) {
+
+        waiting = 0;
+
+    }
+
+    document.getElementById(
+        "waiting"
+    ).innerHTML = waiting;
+
+}
+
+
+// TRACK TOKEN
+
+function trackToken() {
+
+    let input =
+        document.getElementById(
+            "trackNumber"
+        ).value.toUpperCase();
+
+    if(input == "") {
+
+        alert("Please enter your token number.");
+
+        return;
+
+    }
+
+    let number =
+        parseInt(
+            input.replace("T-", "")
+        );
+
+    if(isNaN(number)) {
+
+        document.getElementById(
+            "trackResult"
+        ).innerHTML =
+            "Invalid token number.";
+
+        return;
+
+    }
+
+    let position =
+        number - currentNumber;
+
+    if(position <= 0) {
+
+        document.getElementById(
+            "trackResult"
+        ).innerHTML =
+            "<strong>Your token has already been called.</strong>";
+
+        return;
+
+    }
+
+    let waitingPeople =
+        position - 1;
+
+    let time =
+        waitingPeople * 3;
+
+    document.getElementById(
+        "trackResult"
+    ).innerHTML =
+
+        "<strong>Your Token: " +
+        input +
+        "</strong><br><br>" +
+
+        "People ahead of you: " +
+        waitingPeople +
+        "<br>" +
+
+        "Estimated waiting time: " +
+        time +
+        " minutes<br><br>" +
+
+        "Please wait for your turn.";
+
+}
+
+</script>
+
+</body>
+
+</html>
